@@ -1,5 +1,5 @@
 # OBS
-How to use OBS(Object Storage Services) Open Telekom Cloud with different programming language or different tools
+How to use OBS(Object Storage Services) in Open Telekom Cloud with different programming language or different tools
 
 1.python: boto3
 
