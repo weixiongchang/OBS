@@ -1,0 +1,7 @@
+s3cmd --configure 
+
+//input AK SK and Region
+
+vi ~/.s3cfg
+
+//change host_base and host_bucket to obs.otc.t-systems.com
