@@ -1,0 +1,53 @@
+root@ip-172-31-41-170:/# cat /root/.aws/config
+[default]
+aws_access_key_id = OKMZO********R8VBNS7
+aws_secret_access_key = NaIRhq***************kXNOPPMZSHY
+region = eu-de
+
+root@ip-172-31-41-170:/# cat listbuckets.py
+#!/usr/bin/python
+# Filename : lsbuckets.py
+import boto3
+import boto3.session
+
+session = boto3.session.Session(profile_name='default')
+
+endpoint = 'http://obs.otc.t-systems.com'
+s3 = session.resource(service_name='s3',endpoint_url=endpoint)
+client = s3.meta.client
+
+# List all buckets for S3 account
+for bucket in s3.buckets.all():
+    print(bucket.name)
+
+root@ip-172-31-41-170:/# ./listbuckets.py
+donotdelete413170wzk
+exchange-liujun
+hanadb
+hybrid-wutao
+m-bucket-zwo
+obs--sunway-0706-videos
+root@ip-172-31-41-170:/#
+
+
+
+----------------------------------------------------
+root@ip-172-31-41-170:/# cat listbucket.py
+#!/usr/bin/python
+# Filename : helloworld.py
+import boto3
+#s3=boto3.resource('s3')
+session = boto3.session.Session()
+s3_client=session.client(
+        service_name='s3',
+        aws_access_key_id='OKMZORS****HMR8VBNS7',
+        aws_secret_access_key='NaIRhqsdCSrb*****Fcg4xcxkXNOPPMZSHY',
+        endpoint_url='http://obs.otc.t-systems.com',
+)
+print(s3_client.list_buckets())
+ 
+root@ip-172-31-41-170:/# ./listbucket.py
+{u'Owner': {u'DisplayName': 'OTC00000000001000002114', u'ID': 'b248e57548c645649c9cc3f8fddba68f'}, u'Buckets': [{u'CreationDate': datetime.datetime(2017, 9, 1, 7, 45, 42, 765000, tzinfo=tzlocal()), u'Name': 'donotdelete413170wzk'}, {u'CreationDate': datetime.datetime(2017, 8, 19, 15, 10, 47, 178000, tzinfo=tzlocal()), u'Name': 'exchange-liujun'}, {u'CreationDate': datetime.datetime(2016, 11, 3, 17, 14, 52, 378000, tzinfo=tzlocal()), u'Name': 'hanadb'}, {u'CreationDate': datetime.datetime(2017, 11, 26, 10, 34, 3, 984000, tzinfo=tzlocal()), u'Name': 'hybrid-wutao'}, {u'CreationDate': datetime.datetime(2017, 9, 13, 7, 35, 9, 529000, tzinfo=tzlocal()), u'Name': 'm-bucket-zwo'}, {u'CreationDate': datetime.datetime(2017, 6, 7, 8, 36, 18, 540000, tzinfo=tzlocal()), u'Name': 'obs--sunway-0706-videos'}, {u'CreationDate': datetime.datetime(2017, 11, 7, 5, 17, 16, 81000, tzinfo=tzlocal()), u'Name': 'obs-1ba1'}, {u'CreationDate': datetime.datetime(2017, 2, 20, 12, 57, 10, 89000, tzinfo=tzlocal()), u'Name': 'obs-37cd'}, {u'CreationDate': datetime.datetime(2017, 9, 16, 14, 40, 0, 982000, tzinfo=tzlocal()), u'Name': 'obs-5757'}, {u'CreationDate': datetime.datetime(2017, 8, 14, 8, 46, 37, 355000, tzinfo=tzlocal()), u'Name': 'obs-908c-test'}, {u'CreationDate': datetime.datetime(2017, 9, 18, 8, 29, 9, 769000, tzinfo=tzlocal()), u'Name': 'obs-9bd4'}, {u'CreationDate': datetime.datetime(2017, 5, 12, 12, 38, 59, 819000, tzinfo=tzlocal()), u'Name': 'obs-9e0a'}, {u'CreationDate': datetime.datetime(2017, 3, 23, 16, 29, 30, 928000, tzinfo=tzlocal()), u'Name': 'obs-ayhan'}, {u'CreationDate': datetime.datetime(2017, 8, 16, 7, 23, 40, 479000, tzinfo=tzlocal()), u'Name': 'obs-azjb'}, {u'CreationDate': datetime.datetime(2017, 4, 3, 14, 31, 41, 437000, tzinfo=tzlocal()), u'Name': 'obs-b28c-jason-test'}, {u'CreationDate': datetime.datetime(2017, 1, 26, 10, 38, 13, 489000, tzinfo=tzlocal()), u'Name': 'obs-b316'}, {u'CreationDate': datetime.datetime(2017, 5, 21, 12, 38, 40, 792000, tzinfo=tzlocal()), u'Name': 'obs-b442-junyi'}, {u'CreationDate': datetime.datetime(2017, 2, 10, 12, 57, 37, 232000, tzinfo=tzlocal()), u'Name': 'obs-bc5c'}, {u'CreationDate': datetime.datetime(2017, 6, 30, 8, 50, 5, 55000, tzinfo=tzlocal()), u'Name': 'obs-bucket-001-00418105'}, {u'CreationDate': datetime.datetime(2017, 6, 30, 8, 50, 20, 35000, tzinfo=tzlocal()), u'Name': 'obs-bucket-002-00418105'}, {u'CreationDate': datetime.datetime(2017, 6, 30, 8, 50, 33, 923000, tzinfo=tzlocal()), u'Name': 'obs-bucket-003-00418105'}, {u'CreationDate': datetime.datetime(2017, 5, 18, 18, 10, 52, 836000, tzinfo=tzlocal()), u'Name': 'obs-bucket-of-patrick'}, {u'CreationDate': datetime.datetime(2017, 3, 14, 7, 56, 43, 559000, tzinfo=tzlocal()), u'Name': 'obs-bucket-wanwei1'}, {u'CreationDate': datetime.datetime(2017, 5, 31, 13, 53, 45, 891000, tzinfo=tzlocal()), u'Name': 'obs-c010-sascha'}, {u'CreationDate': datetime.datetime(2017, 7, 3, 9, 58, 30, 21000, tzinfo=tzlocal()), u'Name': 'obs-c475-chenjianyou'}, {u'CreationDate': datetime.datetime(2016, 11, 16, 15, 22, 26, 737000, tzinfo=tzlocal()), u'Name': 'obs-cloudvideo'}, {u'CreationDate': datetime.datetime(2017, 3, 24, 21, 56, 43, 714000, tzinfo=tzlocal()), u'Name': 'obs-cxm'}, {u'CreationDate': datetime.datetime(2017, 3, 6, 12, 3, 34, 394000, tzinfo=tzlocal()), u'Name': 'obs-demootc'}, {u'CreationDate': datetime.datetime(2017, 5, 17, 9, 12, 7, 745000, tzinfo=tzlocal()), u'Name': 'obs-e68c'}, {u'CreationDate': datetime.datetime(2017, 2, 24, 14, 24, 48, 618000, tzinfo=tzlocal()), u'Name': 'obs-junyi'}, {u'CreationDate': datetime.datetime(2017, 4, 13, 3, 26, 26, 331000, tzinfo=tzlocal()), u'Name': 'obs-lilei'}, {u'CreationDate': datetime.datetime(2017, 5, 8, 18, 56, 3, 132000, tzinfo=tzlocal()), u'Name': 'obs-liucd'}, {u'CreationDate': datetime.datetime(2017, 6, 12, 8, 33, 22, 245000, tzinfo=tzlocal()), u'Name': 'obs-lvm'}, {u'CreationDate': datetime.datetime(2017, 9, 14, 15, 57, 15, 321000, tzinfo=tzlocal()), u'Name': 'obs-maoshifeng'}, {u'CreationDate': datetime.datetime(2017, 7, 27, 11, 41, 56, 660000, tzinfo=tzlocal()), u'Name': 'obs-pfsense'}, {u'CreationDate': datetime.datetime(2017, 5, 18, 8, 25, 52, 78000, tzinfo=tzlocal()), u'Name': 'obs-qinzili-test'}, {u'CreationDate': datetime.datetime(2017, 8, 21, 15, 14, 20, 678000, tzinfo=tzlocal()), u'Name': 'obs-sharepoint'}, {u'CreationDate': datetime.datetime(2017, 3, 1, 11, 6, 53, 630000, tzinfo=tzlocal()), u'Name': 'obs-sjulian'}, {u'CreationDate': datetime.datetime(2017, 3, 15, 3, 22, 6, 152000, tzinfo=tzlocal()), u'Name': 'obs-wordcount'}, {u'CreationDate': datetime.datetime(2017, 3, 9, 15, 25, 3, 589000, tzinfo=tzlocal()), u'Name': 'obs-wordcount-zoufacheng'}, {u'CreationDate': datetime.datetime(2017, 5, 4, 14, 19, 39, 205000, tzinfo=tzlocal()), u'Name': 'obs-zgq'}, {u'CreationDate': datetime.datetime(2017, 2, 22, 17, 22, 23, 45000, tzinfo=tzlocal()), u'Name': 'obs-zoufacheng'}, {u'CreationDate': datetime.datetime(2017, 3, 14, 3, 43, 55, 71000, tzinfo=tzlocal()), u'Name': 'otc00000000001000002114eu-de-registry'}, {u'CreationDate': datetime.datetime(2017, 11, 21, 9, 23, 34, 686000, tzinfo=tzlocal()), u'Name': 'sk-testbucket'}, {u'CreationDate': datetime.datetime(2017, 10, 16, 11, 28, 15, 492000, tzinfo=tzlocal()), u'Name': 'test12345'}, {u'CreationDate': datetime.datetime(2017, 10, 17, 13, 45, 3, 412000, tzinfo=tzlocal()), u'Name': 'thomas'}, {u'CreationDate': datetime.datetime(2017, 9, 21, 11, 39, 3, 674000, tzinfo=tzlocal()), u'Name': 'wangzhen'}, {u'CreationDate': datetime.datetime(2017, 9, 22, 21, 43, 53, 429000, tzinfo=tzlocal()), u'Name': 'zhaoyang'}], 'ResponseMetadata': {'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HostId': 'HCjpnpeysRmQafhy4OlwhzqgY7mlObLr9Bh6yo3lh1nhhCCSWxwYgOkeXLmyJd1y', 'RequestId': '056700000160071BC4AFF3FD807D5BE8', 'HTTPHeaders': {'content-length': '4895', 'x-amz-id-2': 'HCjpnpeysRmQafhy4OlwhzqgY7mlObLr9Bh6yo3lh1nhhCCSWxwYgOkeXLmyJd1y', 'x-amz-request-id': '056700000160071BC4AFF3FD807D5BE8', 'x-reserved': 'amazon, aws and amazon web services are trademarks or registered trademarks of Amazon Technologies, Inc', 'date': 'Wed, 29 Nov 2017 09:29:08 GMT', 'content-type': 'application/xml'}}}
+root@ip-172-31-41-170:/#
+ 
+
