@@ -1,0 +1,134 @@
+root@seafile:~# ls
+createbucket.py helloworld.txt listbuccket.py novarc seafile-license1.txt
+root@seafile:~# cat novarc
+export OS_USERNAME="we******ng"
+export OS_USERID=48fe**********e30e59b
+export OS_USER_DOMAIN_NAME=OTC00000000001000010509
+#export OS_DOMAIN_NAME="${NAME##* }"
+export OS_PASSWORD="wx****12"
+export OS_PROJECT_NAME=eu-de
+export OS_PROJECT_DOMAIN_ID=c6cf4144fd8249eebd376529a73dd59a
+#export OS_PROJECT_ID=
+export OS_AUTH_URL=https://iam.eu-de.otc.t-systems.com:443/v3
+export OS_INTERFACE=public
+# No changes needed beyond this point
+export NOVA_ENDPOINT_TYPE=publicURL
+export OS_ENDPOINT_TYPE=publicURL
+export CINDER_ENDPOINT_TYPE=publicURL
+export OS_VOLUME_API_VERSION=2
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+
+root@seafile:~# source novarc
+root@seafile:~# openstack container list
++---------------------------+
+| Name |
++---------------------------+
+| container-weixiongchang01 |
+| container-weixiongchang02 |
+| container-weixiongchang03 |
+| helloworld.txt |
++---------------------------+
+root@seafile:~# openstack container create container-weixiongchang04
++---------------------------------------+---------------------------+------------------------------------+
+| account | container | x-trans-id |
++---------------------------------------+---------------------------+------------------------------------+
+| AUTH_c6cf4144fd8249eebd376529a73dd59a | container-weixiongchang04 | tx081500000162ce166d624-a297b39652 |
++---------------------------------------+---------------------------+------------------------------------+
+root@seafile:~# openstack container list
++---------------------------+
+| Name |
++---------------------------+
+| container-weixiongchang01 |
+| container-weixiongchang02 |
+| container-weixiongchang03 |
+| container-weixiongchang04 |
+| helloworld.txt |
++---------------------------+
+root@seafile:~# openstack object list container-weixiongchang04
+
+root@seafile:~# ls
+createbucket.py helloworld.txt listbuccket.py novarc seafile-license1.txt
+root@seafile:~# openstack object create container-weixiongchang01 createbucket.py listbuccket.py
++-----------------+---------------------------+----------------------------------+
+| object | container | etag |
++-----------------+---------------------------+----------------------------------+
+| createbucket.py | container-weixiongchang01 | 331fa5c26cd1d32169b9d92223530195 |
+| listbuccket.py | container-weixiongchang01 | 68cc5adce4c64a56071cd267ea29e27a |
++-----------------+---------------------------+----------------------------------+
+root@seafile:~# openstack object create container-weixiongchang04 createbucket.py listbuccket.py
++-----------------+---------------------------+----------------------------------+
+| object | container | etag |
++-----------------+---------------------------+----------------------------------+
+| createbucket.py | container-weixiongchang04 | 331fa5c26cd1d32169b9d92223530195 |
+| listbuccket.py | container-weixiongchang04 | 68cc5adce4c64a56071cd267ea29e27a |
++-----------------+---------------------------+----------------------------------+
+root@seafile:~# openstack object show container-weixiongchang04 listbuccket.py
++----------------+---------------------------------------+
+| Field | Value |
++----------------+---------------------------------------+
+| account | AUTH_c6cf4144fd8249eebd376529a73dd59a |
+| container | container-weixiongchang04 |
+| content-length | 379 |
+| content-type | text/x-python |
+| etag | "68cc5adce4c64a56071cd267ea29e27a" |
+| last-modified | Mon, 16 Apr 2018 10:55:56 GMT |
+| object | listbuccket.py |
++----------------+---------------------------------------+
+root@seafile:~# ls listbuccket.py -l
+-rwxr-xr-x 1 root root 379 Mar 21 18:26 listbuccket.py
+root@seafile:~# openstack catalog show objectstorage
++-----------+-----------------------------------------------+
+| Field | Value |
++-----------+-----------------------------------------------+
+| endpoints | eu-de |
+| | public: https://obs.eu-de.otc.t-systems.com |
+| | |
+| id | 51277de7b1b34c7d8edad30bd81ab5f1 |
+| name | objectstorage |
+| type | object |
++-----------+-----------------------------------------------+
+root@seafile:~#
+
+
+-------------
+
+
+root@seafile:~# swift list
+container-weixiongchang01
+container-weixiongchang02
+container-weixiongchang03
+container-weixiongchang04
+helloworld.txt
+
+root@seafile:~# swift upload container-weixiongchang04 novarc
+novarc
+root@seafile:~# swift list container-weixiongchang04
+createbucket.py
+listbuccket.py
+novarc
+
+
+root@seafile:~# swift --debug list
+DEBUG:keystoneclient.auth.identity.v3.base:Making authentication request to https://iam.eu-de.otc.t-systems.com:443/v3/auth/tokens
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): iam.eu-de.otc.t-systems.com
+DEBUG:urllib3.connectionpool:https://iam.eu-de.otc.t-systems.com:443 "POST /v3/auth/tokens HTTP/1.1" 201 None
+DEBUG:keystoneclient.auth.identity.v3.base:{"token": {"methods": ["password"], "roles": [{"name": "te_agency", "id": "41ce5857c94c4775b6cc53d5feeba445"}, {"name": "te_admin", "id": "699bd62cda304d2cad03fd2fb190b8cf"}], "expires_at": "2018-04-17T14:08:33.108000Z", "project": {"domain": {"id": "e6f05072781b48448136a26c516b335a", "name": "OTC00000000001000010509", "xdomain_id": "00000000001000010509", "xdomain_type": "TSI"}, "name": "eu-de", "id": "c6cf4144fd8249eebd376529a73dd59a"}, "catalog": [{"endpoints": [{"interface": "public", "url": "https://vpc.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "af310f1928e94df081c70681f7bd0c99"}], "type": "network", "name": "neutron", "id": "17d89ac272864e5db017ace42ec33514"}, {"endpoints": [{"interface": "public", "url": "https://dis.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "2e6291b553f949aa96a5ac35ec42715c"}], "type": "dis", "name": " Data Ingestion Service", "id": "a98d684c000c429c8587ecb106ab9c81"}, {"endpoints": [{"interface": "public", "url": "https://smn.eu-de.otc.t-systems.com/v2/", "region": "eu-de", "region_id": "eu-de", "id": "ca7b1cb6878f4a26a0446b7d7ccd5506"}], "type": "smn", "name": "SimpleMessageNotification", "id": "33f5635b02324436848c3350bb05b3e6"}, {"endpoints": [{"interface": "public", "url": "https://mrs.eu-de.otc.t-systems.com/v1.1", "region": "eu-de", "region_id": "eu-de", "id": "62ce7ad8991d412aaac2aa0489185d75"}], "type": "mrs", "name": "mapreduce", "id": "9ef2f792a4aa4f038a1d2a07d552483a"}, {"endpoints": [{"interface": "public", "url": "https://obs.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "fc7a3989f18c4cfaac74abd7d890fefe"}], "type": "object", "name": "objectstorage", "id": "51277de7b1b34c7d8edad30bd81ab5f1"}, {"endpoints": [{"interface": "public", "url": "https://csbs.eu-de.otc.t-systems.com/v1/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "1d6167579e084e40bd9f53b74e06adfe"}], "type": "data-protect", "name": "karbor", "id": "7e0d2f600d55430fa0a26e17d0f242ee"}, {"endpoints": [{"interface": "public", "url": "https://sfs.eu-de.otc.t-systems.com/v2/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "3d9da03c588f49568d6f430b722a19ae"}], "type": "share", "name": "sfs", "id": "3866a5dcc1914e9ca1d264e81e9558c6"}, {"endpoints": [{"interface": "public", "url": "https://antiddos.eu-de.otc.t-systems.com/v1/", "region": "eu-de", "region_id": "eu-de", "id": "040ef992594245a7808e3d5092a15b63"}], "type": "Anti-DDoS", "name": "antiddos", "id": "8d3cfc79bd02415ca1456f4efb2d679e"}, {"endpoints": [{"interface": "public", "url": "https://dms.eu-de.otc.t-systems.com/v1.0", "region": "eu-de", "region_id": "eu-de", "id": "c271920659c0481da20d260350f5545b"}], "type": "dms", "name": "distributedmessageservice", "id": "9978936bc0a14813ba57f85d8377ace1"}, {"endpoints": [{"interface": "public", "url": "https://rds.eu-de.otc.t-systems.com/v1.0", "region": "eu-de", "region_id": "eu-de", "id": "f54a19af702843fcbc8d6e23e214dd69"}], "type": "database", "name": "trove", "id": "0e535c30b96e49b19f9098cb9fd4b368"}, {"endpoints": [{"interface": "public", "url": "https://dcs.eu-de.otc.t-systems.com/v1.0/", "region": "eu-de", "region_id": "eu-de", "id": "6901947715a94dd48e961443f937637c"}], "type": "dcs", "name": " Distributed Cache Service", "id": "b68904da4654407fa2fe80ebb1517ba1"}, {"endpoints": [{"interface": "public", "url": "https://ims.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "1360c0dc80654c5790c1b6d210f34746"}], "type": "image", "name": "glance", "id": "90095f474f054b4ba6e029bc398ccb59"}, {"endpoints": [{"interface": "public", "url": "https://dns.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "0047a06690484d86afe04877074efddf"}], "type": "dns", "name": "designate", "id": "56cd81db1f8445d98652479afe07c5ba"}, {"endpoints": [{"interface": "public", "url": "https://rts.eu-de.otc.t-systems.com/v1/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "2bbfa8fc6ea246eb8556d2e2525c46d8"}], "type": "orchestration", "name": "heat", "id": "233635b49a5b4ba48f6615f84ffc6694"}, {"endpoints": [{"interface": "public", "url": "https://evs.eu-de.otc.t-systems.com/v2/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "c097d8ea9064465296461205bdaf26d1"}], "type": "volumev2", "name": "cinderv2", "id": "0c69eafe914149d487fb7475ed0287c5"}, {"endpoints": [{"interface": "public", "url": "https://cce.eu-de.otc.t-systems.com/api/v1", "region": "eu-de", "region_id": "eu-de", "id": "2d0ec9691e104c84961801451a9843c5"}], "type": "cce", "name": "containerengine", "id": "0a07d1952689433094703fb067377789"}, {"endpoints": [{"interface": "public", "url": "https://vbs.eu-de.otc.t-systems.com/v2/", "region": "eu-de", "region_id": "eu-de", "id": "9624e5f4dd5f4309a18a8062702786c7"}], "type": "vbs", "name": "volume-backup", "id": "f48ebde6bb6a4e43b5ec914eae78e77b"}, {"endpoints": [{"interface": "public", "url": "https://ecs.eu-de.otc.t-systems.com/v2/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "e2ffee808abc4a60916715b1d4b489dd"}], "type": "compute", "name": "nova", "id": "b7f2a5b1a019459cb956e43a8cb41e31"}, {"endpoints": [{"interface": "public", "url": "https://evs.eu-de.otc.t-systems.com/v2/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "fd24445c934b4687acb0d8a47b5e136c"}], "type": "volume", "name": "cinder", "id": "ac97a488327b43d19f50fd0afee67c33"}, {"endpoints": [{"interface": "public", "url": "https://sfs.eu-de.otc.t-systems.com/v2/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "6ae27b09f23b41f5bdeb49581d363f69"}], "type": "sharev2", "name": "sfs", "id": "7e8a1f668cd248bd8eca3577469c6cf5"}, {"endpoints": [{"interface": "public", "url": "https://cts.eu-de.otc.t-systems.com/v1/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "b6338787240746c6b9c63666f19b403c"}, {"interface": "public", "url": "https://cts.eu-de.otc.t-systems.com/v2/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "c5bf21c0889d4bdab4aed2fa8f624c3e"}], "type": "Mgmt & Deployment", "name": "cts", "id": "fc7589a8115042ae85d5161b232b9e5f"}, {"endpoints": [{"interface": "public", "url": "https://rds.eu-de.otc.t-systems.com/rds/v1", "region": "eu-de", "region_id": "eu-de", "id": "c78833f16e604b4f9779b1bd0a5270ce"}], "type": "rds", "name": "relationaldatabase", "id": "f5508175271042759f4f979bb274bd8b"}, {"endpoints": [{"interface": "public", "url": "https://maas.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "2d5ed0fb59b94846bd23ce26f9db8698"}], "type": "maas", "name": " migrationasaservice ", "id": "7f063c076bec425a83a8d0ab13a533ed"}, {"endpoints": [{"interface": "public", "url": "https://dws.eu-de.otc.t-systems.com", "region": "eu-de", "region_id": "eu-de", "id": "18187aeed8de4ce690f1140540097a9f"}], "type": "dws", "name": "datawarehouseservice", "id": "b5631c5444ae4d83a56175084333ad6f"}, {"endpoints": [{"interface": "public", "url": "https://kms.eu-de.otc.t-systems.com/v1.0/", "region": "eu-de", "region_id": "eu-de", "id": "c797ee4caeba48f7b69b8637263a4b74"}], "type": "kms", "name": "key-management", "id": "51b2c52dd9ec41febe6420d0938aaec5"}, {"endpoints": [{"interface": "public", "url": "https://as.eu-de.otc.t-systems.com/autoscaling-api/v1", "region": "eu-de", "region_id": "eu-de", "id": "12083f0bf1f14c09937c9111508d738d"}], "type": "as", "name": "autoscaling", "id": "4d06a55b120640eabe9d1b8a706cd9b6"}, {"endpoints": [{"interface": "public", "url": "https://tms.eu-de.otc.t-systems.com/v1.0", "region": "eu-de", "region_id": "eu-de", "id": "68f70ac830fd4e4e9e83caea260f46ec"}], "type": "tms", "name": "tag-management", "id": "a5149bea8d664191a0fe1c7eaa886706"}, {"endpoints": [{"interface": "public", "url": "https://ces.eu-de.otc.t-systems.com/V1.0/", "region": "eu-de", "region_id": "eu-de", "id": "41ac39ca57fa4386bf4a4dc8fc8dd4cb"}], "type": "ces", "name": "cloudeye", "id": "7fd1b40b0aa041c08dee0020c5a2d50a"}, {"endpoints": [{"interface": "public", "url": "https://swift.eu-de.otc.t-systems.com/v1/AUTH_c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "480c81f968e841b8bfac3d7a1c46a589"}], "type": "object-store", "name": "swift", "id": "b2a2507faf154effae7d8183afa493b3"}, {"endpoints": [{"interface": "public", "url": "https://elb.eu-de.otc.t-systems.com/v1.0", "region": "eu-de", "region_id": "eu-de", "id": "a3134e8d73e9429599460b4195e64617"}], "type": "elb", "name": "loadbalance", "id": "d06b35e9eea0408b83581bcd3e3f7f2b"}, {"endpoints": [{"interface": "public", "url": "https://workspace.eu-de.otc.t-systems.com/v1.0/c6cf4144fd8249eebd376529a73dd59a", "region": "eu-de", "region_id": "eu-de", "id": "c945c929a57c4dc3b49b6d9c238687ab"}], "type": "wks", "name": "Workspace", "id": "272d59f7d1934e2f9b2d065149122fff"}, {"endpoints": [{"interface": "public", "url": "https://iam.eu-de.otc.t-systems.com/v3", "region": "*", "region_id": "*", "id": "31324f96ad02413290b51b5a20ddfc21"}], "type": "identity", "name": "keystone", "id": "45a401041b6547f79b976e2d0727c52b"}], "user": {"domain": {"id": "e6f05072781b48448136a26c516b335a", "name": "OTC00000000001000010509", "xdomain_id": "00000000001000010509", "xdomain_type": "TSI"}, "name": "weixiongchang", "id": "48fe4345126141f0a210811a2e30e59b"}, "issued_at": "2018-04-16T14:08:33.108000Z"}}
+DEBUG:keystoneclient.httpclient:Failed to find endpoint for management url admin endpoint for identity service not found
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): swift.eu-de.otc.t-systems.com
+DEBUG:urllib3.connectionpool:https://swift.eu-de.otc.t-systems.com:443 "GET /v1/AUTH_c6cf4144fd8249eebd376529a73dd59a?format=json HTTP/1.1" 200 311
+DEBUG:swiftclient:REQ: curl -i https://swift.eu-de.otc.t-systems.com/v1/AUTH_c6cf4144fd8249eebd376529a73dd59a?format=json -X GET -H "X-Auth-Token: MIIE8QYJKoZIhvcNAQcCoIIE4jCCBN4CAQExDTALBglghkgBZQMEAgEwggK-BgkqhkiG9w0BBwGgggKwBIICrHsidG9rZW4iOnsiZXhwaXJlc19hdCI6IjIwMTgtMDQtMTdUMTQ6MDg6MzMuMTA4MDAwWiIsIm1ldGhvZHMiOlsicGFzc3dvcmQiXSwiY2F0YWxvZyI6W10sInJvbGVzIjpbeyJuYW1lIjoidGVfYWdlbmN5IiwiaWQiOiI0MWNlNTg1N2M5NGM0Nzc1YjZjYzUzZDVmZWViYTQ0NSJ9LHsibmFtZSI6InRlX2FkbWluIiwiaWQiOiI2OTliZDYyY2RhMzA0ZDJjYWQwM2ZkMmZiMTkwYjhjZiJ9XSwicHJvamVjdCI6eyJkb21haW4iOnsieGRvbWFpbl90eXBlIjoiVFNJIiwibmFtZSI6Ik9UQzAwMDAwMDAwMDAxMDAwMDEwNTA5IiwiaWQiOiJlNmYwNTA3Mjc4MWI0ODQ0ODEzNmEyNmM1MTZiMzM1YSIsInhkb21haW5faWQiOiIwMDAwMDAwMDAwMTAwMDAxMDUwOSJ9LCJuYW1lIjoiZXUtZGUiLCJpZCI6ImM2Y2Y0MTQ0ZmQ4MjQ5ZWViZDM3NjUyOWE3M2RkNTlhIn0sImlzc3VlZF9hdCI6IjIwMTgtMDQtMTZUMTQ6MDg6MzMuMTA4MDAwWiIsInVzZXIiOnsiZG9tYWluIjp7Inhkb21haW5fdHlwZSI6IlRTSSIsIm5hbWUiOiJPVEMwMDAwMDAwMDAwMTAwMDAxMDUwOSIsImlkIjoiZTZmMDUwNzI3ODFiNDg0NDgxMzZhMjZjNTE2YjMzNWEiLCJ4ZG9tYWluX2lkIjoiMDAwMDAwMDAwMDEwMDAwMTA1MDkifSwibmFtZSI6IndlaXhpb25nY2hhbmciLCJpZCI6IjQ4ZmU0MzQ1MTI2MTQxZjBhMjEwODExYTJlMzBlNTliIn19fTGCAgUwggIBAgEBMFwwVzELMAkGA1UEBhMCVVMxDjAMBgNVBAgMBVVuc2V0MQ4wDAYDVQQHDAVVbnNldDEOMAwGA1UECgwFVW5zZXQxGDAWBgNVBAMMD3d3dy5leGFtcGxlLmNvbQIBATALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggGAfvOGjju5NeNlH52Ue+BUFI97UbGLwpIVKQxWF16CfvGiR77crDRmxFdDEFVnu7lD9YW0hDt+WpVhY7rxAJuA3OkffQ4jLA07P2R324BJ4QNES2MvtJT4M28GZO2dtSZpGcVu7v5wMevErWYpVffIZz8PHi0DphziGQ1NSFH4Qaoc5OsJ5Jx+DZptORsy+BkClU0puuhUhw7qRqxSN5SIZ2XtMEEwMlwb0k4ygm7vFdj2UCP0Ur4u3xSZPRrHMdskjikOkkmM1IMjoQUalnBWo-O2PmTAm2fReHhJZyuOffqlk6VTlNfk8ROahQeGoA2hR2mJXOiIm0JOF+4w8u5bmKX+ysqbTHH5tRW9BQU4xhVI58SmxdbuFLQZjyUPptlHv4OfRLX6tBSfzTkHgTLOZ1RKZLYm5EeP7lrbZC2NCCY8jKuFnWM7te1Ka90T576a+Upmwr2F1MatSQCZ4gkJk0DSfGwAtAVlTDWrweNi8wptUshPYHFt8aF2P+BTvcez"
+DEBUG:swiftclient:RESP STATUS: 200 OK
+DEBUG:swiftclient:RESP HEADERS: {u'Content-Length': u'311', u'Accept-Ranges': u'bytes', u'X-Account-Project-Domain-Id': u'e6f05072781b48448136a26c516b335a', u'X-Timestamp': u'1521756644.49469', u'X-Trans-Id': u'tx081500000162cec92b8d5-b5ef3611c3', u'Date': u'Mon, 16 Apr 2018 14:08:33 GMT', u'X-Account-Bytes-Used': u'1326', u'X-Account-Container-Count': u'5', u'Content-Type': u'application/json;charset=UTF-8', u'X-Account-Object-Count': u'6'}
+DEBUG:swiftclient:RESP BODY: [{"count": 2, "bytes": 651, "name": "container-weixiongchang01"}, {"count": 0, "bytes": 0, "name": "container-weixiongchang02"}, {"count": 1, "bytes": 12, "name": "container-weixiongchang03"}, {"count": 3, "bytes": 1299, "name": "container-weixiongchang04"}, {"count": 1, "bytes": 12, "name": "helloworld.txt"}]
+DEBUG:urllib3.connectionpool:https://swift.eu-de.otc.t-systems.com:443 "GET /v1/AUTH_c6cf4144fd8249eebd376529a73dd59a?format=json&marker=helloworld.txt HTTP/1.1" 200 2
+DEBUG:swiftclient:REQ: curl -i https://swift.eu-de.otc.t-systems.com/v1/AUTH_c6cf4144fd8249eebd376529a73dd59a?format=json&marker=helloworld.txt -X GET -H "X-Auth-Token: MIIE8QYJKoZIhvcNAQcCoIIE4jCCBN4CAQExDTALBglghkgBZQMEAgEwggK-BgkqhkiG9w0BBwGgggKwBIICrHsidG9rZW4iOnsiZXhwaXJlc19hdCI6IjIwMTgtMDQtMTdUMTQ6MDg6MzMuMTA4MDAwWiIsIm1ldGhvZHMiOlsicGFzc3dvcmQiXSwiY2F0YWxvZyI6W10sInJvbGVzIjpbeyJuYW1lIjoidGVfYWdlbmN5IiwiaWQiOiI0MWNlNTg1N2M5NGM0Nzc1YjZjYzUzZDVmZWViYTQ0NSJ9LHsibmFtZSI6InRlX2FkbWluIiwiaWQiOiI2OTliZDYyY2RhMzA0ZDJjYWQwM2ZkMmZiMTkwYjhjZiJ9XSwicHJvamVjdCI6eyJkb21haW4iOnsieGRvbWFpbl90eXBlIjoiVFNJIiwibmFtZSI6Ik9UQzAwMDAwMDAwMDAxMDAwMDEwNTA5IiwiaWQiOiJlNmYwNTA3Mjc4MWI0ODQ0ODEzNmEyNmM1MTZiMzM1YSIsInhkb21haW5faWQiOiIwMDAwMDAwMDAwMTAwMDAxMDUwOSJ9LCJuYW1lIjoiZXUtZGUiLCJpZCI6ImM2Y2Y0MTQ0ZmQ4MjQ5ZWViZDM3NjUyOWE3M2RkNTlhIn0sImlzc3VlZF9hdCI6IjIwMTgtMDQtMTZUMTQ6MDg6MzMuMTA4MDAwWiIsInVzZXIiOnsiZG9tYWluIjp7Inhkb21haW5fdHlwZSI6IlRTSSIsIm5hbWUiOiJPVEMwMDAwMDAwMDAwMTAwMDAxMDUwOSIsImlkIjoiZTZmMDUwNzI3ODFiNDg0NDgxMzZhMjZjNTE2YjMzNWEiLCJ4ZG9tYWluX2lkIjoiMDAwMDAwMDAwMDEwMDAwMTA1MDkifSwibmFtZSI6IndlaXhpb25nY2hhbmciLCJpZCI6IjQ4ZmU0MzQ1MTI2MTQxZjBhMjEwODExYTJlMzBlNTliIn19fTGCAgUwggIBAgEBMFwwVzELMAkGA1UEBhMCVVMxDjAMBgNVBAgMBVVuc2V0MQ4wDAYDVQQHDAVVbnNldDEOMAwGA1UECgwFVW5zZXQxGDAWBgNVBAMMD3d3dy5leGFtcGxlLmNvbQIBATALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggGAfvOGjju5NeNlH52Ue+BUFI97UbGLwpIVKQxWF16CfvGiR77crDRmxFdDEFVnu7lD9YW0hDt+WpVhY7rxAJuA3OkffQ4jLA07P2R324BJ4QNES2MvtJT4M28GZO2dtSZpGcVu7v5wMevErWYpVffIZz8PHi0DphziGQ1NSFH4Qaoc5OsJ5Jx+DZptORsy+BkClU0puuhUhw7qRqxSN5SIZ2XtMEEwMlwb0k4ygm7vFdj2UCP0Ur4u3xSZPRrHMdskjikOkkmM1IMjoQUalnBWo-O2PmTAm2fReHhJZyuOffqlk6VTlNfk8ROahQeGoA2hR2mJXOiIm0JOF+4w8u5bmKX+ysqbTHH5tRW9BQU4xhVI58SmxdbuFLQZjyUPptlHv4OfRLX6tBSfzTkHgTLOZ1RKZLYm5EeP7lrbZC2NCCY8jKuFnWM7te1Ka90T576a+Upmwr2F1MatSQCZ4gkJk0DSfGwAtAVlTDWrweNi8wptUshPYHFt8aF2P+BTvcez"
+DEBUG:swiftclient:RESP STATUS: 200 OK
+DEBUG:swiftclient:RESP HEADERS: {u'Content-Length': u'2', u'Accept-Ranges': u'bytes', u'X-Account-Project-Domain-Id': u'e6f05072781b48448136a26c516b335a', u'X-Timestamp': u'1521756644.49469', u'X-Trans-Id': u'tx081500000162cec92c585-b780ad5c3f', u'Date': u'Mon, 16 Apr 2018 14:08:33 GMT', u'X-Account-Bytes-Used': u'1326', u'X-Account-Container-Count': u'5', u'Content-Type': u'application/json;charset=UTF-8', u'X-Account-Object-Count': u'6'}
+DEBUG:swiftclient:RESP BODY: []
+container-weixiongchang01
+container-weixiongchang02
+container-weixiongchang03
+container-weixiongchang04
+helloworld.txt
+root@seafile:~#
