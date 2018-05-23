@@ -1,0 +1,195 @@
+In this example, company_B success to grant company_A with the full_control permission.   tenants can also use “*” as the wildcards in s3cmd to match multiple objects uploaded by company_B.
+
+ 
+
+ 
+
+Green: Account company_A
+
+Yellow: Account company_B
+
+ 
+
+1.    company_A create a bucket “company_A-bucket”
+
+root@seafile:~# s3cmd mb s3://company_A-bucket
+
+Bucket 's3://company_A-bucket/' created
+
+root@seafile:~#
+
+root@seafile:~# touch company_A001 company_A002 company_A003
+
+root@seafile:~# s3cmd put company_A* s3://company_A-bucket/
+
+upload: 'company_A001' -> 's3://company_A-bucket/company_A001'  [1 of 3]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+upload: 'company_A002' -> 's3://company_A-bucket/company_A002'  [2 of 3]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+upload: 'company_A003' -> 's3://company_A-bucket/company_A003'  [3 of 3]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+2.    company_B cannot access “company_A-bucket”
+
+[root@esa01 ~]# s3cmd ls s3://company_A-bucket
+
+ERROR: Access to bucket 'company_A-bucket' was denied
+
+ERROR: S3 error: 403 (AccessDenied): Access Denied
+
+3.    company_A grant company_B the full_control of company_A bucket via account ID  (b248e57548c645649c9cc3f8fddba68f)
+
+root@seafile:~# s3cmd setacl --acl-grant=full_control:b248e57548c645649c9cc3f8fddba68f s3://company_A-bucket/
+
+s3://company_A-bucket/: ACL updated
+
+root@seafile:~#
+
+4.    company_B success to upload objects to company_A bucket
+
+[root@esa01 ~]# s3cmd ls s3://company_A-bucket
+
+2018-05-23 14:22         0   s3://company_A-bucket/company_A001
+
+2018-05-23 14:22         0   s3://company_A-bucket/company_A002
+
+2018-05-23 14:22         0   s3://company_A-bucket/company_A003
+
+[root@esa01 ~]#
+
+[root@esa01 ~]# touch company_B001 company_B002 company_B003
+
+[root@esa01 ~]# s3cmd put company_B* s3://company_A-bucket/
+
+upload: 'company_B001' -> 's3://company_A-bucket/company_B001'  [1 of 3]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+upload: 'company_B002' -> 's3://company_A-bucket/company_B002'  [2 of 3]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+upload: 'company_B003' -> 's3://company_A-bucket/company_B003'  [3 of 3]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+5.    company_A has no permission to download objects created by company_B
+
+root@seafile:~# s3cmd ls  s3://company_A-bucket/
+
+2018-05-23 14:22         0   s3://company_A-bucket/company_A001
+
+2018-05-23 14:22         0   s3://company_A-bucket/company_A002
+
+2018-05-23 14:22         0   s3://company_A-bucket/company_A003
+
+2018-05-23 14:26         0   s3://company_A-bucket/company_B001
+
+2018-05-23 14:26         0   s3://company_A-bucket/company_B002
+
+2018-05-23 14:26         0   s3://company_A-bucket/company_B003
+
+root@seafile:~# s3cmd get  s3://company_A-bucket/company_B001 company_B001
+
+download: 's3://company_A-bucket/company_B001' -> 'company_B001'  [1 of 1]
+
+ERROR: S3 error: 403 (Forbidden)
+
+root@seafile:~# s3cmd get  s3://company_A-bucket/company_B002 company_B002
+
+download: 's3://company_A-bucket/company_B002' -> 'company_B002'  [1 of 1]
+
+ERROR: S3 error: 403 (Forbidden)
+
+6.    company_B grant full_control of their objects to company_A
+
+[root@esa01 ~]# s3cmd setacl --acl-grant=full_control:e6f05072781b48448136a26c516b335a s3://company_A-bucket/company_B*
+
+s3://company_A-bucket/company_B001: ACL updated
+
+s3://company_A-bucket/company_B002: ACL updated
+
+s3://company_A-bucket/company_B003: ACL updated
+
+[root@esa01 ~]#
+
+7.    company_A has permission to download/delete objects created by company_B, tenants can also use “s3cmd info “to check the concreate ACL settings
+
+root@seafile:~# s3cmd get  s3://company_A-bucket/company_B001 company_B001
+
+download: 's3://company_A-bucket/company_B001' -> 'company_B001'  [1 of 1]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+root@seafile:~# s3cmd get  s3://company_A-bucket/company_B002 company_B002
+
+download: 's3://company_A-bucket/company_B002' -> 'company_B002'  [1 of 1]
+
+0 of 0     0% in    0s     0.00 B/s  done
+
+root@seafile:~# s3cmd info s3://company_A-bucket/company_B001
+
+s3://company_A-bucket/company_B001 (object):
+
+   File size: 0
+
+   Last mod:  Wed, 23 May 2018 14:26:29 GMT
+
+   MIME type: inode/x-empty
+
+   Storage:   STANDARD
+
+   MD5 sum:   d41d8cd98f00b204e9800998ecf8427e
+
+   SSE:       none
+
+   policy:    none
+
+   cors:      none
+
+   ACL:       b248e57548c645649c9cc3f8fddba68f: FULL_CONTROL
+
+   ACL:       e6f05072781b48448136a26c516b335a: FULL_CONTROL
+
+   x-amz-meta-s3cmd-attrs: atime:1527085563/ctime:1527085563/gid:0/gname:root/md5:d41d8cd98f00b204e9800998ecf8427e/mode:33188/mtime:1527085563/uid:0/uname:root
+
+root@seafile:~#
+
+root@seafile:~# s3cmd rm  s3://company_A-bucket/company_B*
+
+delete: 's3://company_A-bucket/company_B001'
+
+delete: 's3://company_A-bucket/company_B002'
+
+delete: 's3://company_A-bucket/company_B003'
+
+ 
+
+
+
+Summary: 
+
+If creator of one object is not the same as the owner of the bucket, the bucket policy will not apply to this object in OBS.  
+
+ 
+
+Example:
+
+1.    A has a bucket “aws-xfer” , grant B to write object into this bucket. 
+
+2.    B writes an object “test.txt” in bucket “aws-xfer”.  The object “test.txt” is belong to B.  A cannot download “test.txt” in default unless B grant A to access “test.txt” .
+
+3.    A want to use bucket policy to allow “test.txt” readable by A, but the bucket policy would not  apply to “test.txt” which is belong to B.  
+
+ 
+
+Solution :
+
+1.    When B upload object in “aws-xfer” , B need to specify in ACL that A can access this object
+
+2.    After B had uploaded object in “aws-xfer”, B need to use his account to modify ACL to allow A to access object.  
