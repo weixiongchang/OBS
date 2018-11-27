@@ -1,0 +1,1 @@
+use “s3cmd multipart s3://bucketname” to list unmerged segments,  and then use “s3cmd abortmp s3://BUCKET/OBJECT Id” to delete unmerged segments. 
